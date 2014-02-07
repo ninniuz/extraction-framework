@@ -4,11 +4,12 @@ import xml.Elem
 import javax.ws.rs.{GET, Produces, Path}
 import org.dbpedia.extraction.destinations.formatters.{Formatter,TriXFormatter}
 import java.io.Writer
+import org.dbpedia.extraction.server.util.WebUtils
 
 object TriX
 {
     /**
-     * @param number of "../" steps to prepend to the path to "stylesheets/trix.xsl"
+     * @param parents number of "../" steps to prepend to the path to "stylesheets/trix.xsl"
      */
     def writeHeader(writer: Writer, parents : Int): Formatter = 
     {
@@ -26,37 +27,51 @@ class TriX
     {
         <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:trix="http://www.w3.org/2004/03/trix/trix-1/">
           <xsl:template match="/trix:TriX">
-            <html>
+            <html lang="en">
               <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+                <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" />
+                <style type="text/css">{WebUtils.dashboardCss()}</style>
               </head>
               <body>
-                <h2>DBpedia Extraction Results</h2>
-                  <table border="1" cellpadding="3" cellspacing="0">
-                    <tr bgcolor="#CCCCFF">
-                      <th>Subject</th>
-                      <th>Predicate</th>
-                      <th>Object</th>
-                      <th>Triple Provenance</th>
-                    </tr>
-                    <xsl:for-each select="trix:graph">
-                      <xsl:variable name="context" select="trix:uri"/>
-                      <xsl:if test="trix:triple[1]/trix:uri[1] != preceding-sibling::trix:graph[1]/trix:triple[1]/trix:uri[1]">
-                        <tr bgcolor="#CCCCFF">
-                          <th>Subject</th>
-                          <th>Predicate</th>
-                          <th>Object</th>
-                          <th>Triple Provenance</th>
-                        </tr>
-                      </xsl:if>
-                      <xsl:for-each select="trix:triple">
-                        <tr>
-                          <xsl:apply-templates/>
-                          <td><a href="{$context}"><xsl:value-of select="$context"/></a></td>
-                        </tr>
-                      </xsl:for-each>
-                  </xsl:for-each>
-                </table>
+                {WebUtils.getBootStrapNavBar()}
+                <div class="container-fluid">
+                  <div class="row">
+                    {WebUtils.addSidebar()}
+                    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                      <h1 class="page-header">DBpedia Extraction Results</h1>
+                      <table class="table table-striped table-condensed table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Subject</th>
+                            <th>Predicate</th>
+                            <th>Object</th>
+                            <th>Triple Provenance</th>
+                          </tr>
+                        </thead>
+                        <xsl:for-each select="trix:graph">
+                          <xsl:variable name="context" select="trix:uri"/>
+                          <xsl:if test="trix:triple[1]/trix:uri[1] != preceding-sibling::trix:graph[1]/trix:triple[1]/trix:uri[1]">
+                            <thead>
+                              <tr>
+                                <th>Subject</th>
+                                <th>Predicate</th>
+                                <th>Object</th>
+                                <th>Triple Provenance</th>
+                              </tr>
+                            </thead>
+                          </xsl:if>
+                          <xsl:for-each select="trix:triple">
+                            <tr>
+                              <xsl:apply-templates/>
+                              <td><a href="{$context}" target="_blank"><xsl:value-of select="$context"/></a></td>
+                            </tr>
+                          </xsl:for-each>
+                        </xsl:for-each>
+                      </table>
+                    </div>
+                    </div>
+                  </div>
               </body>
             </html>
           </xsl:template>

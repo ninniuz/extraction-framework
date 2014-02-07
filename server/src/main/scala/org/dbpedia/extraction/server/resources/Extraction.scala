@@ -64,24 +64,35 @@ class Extraction(@PathParam("lang") langCode : String)
        <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
          <head>
            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+           <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" />
          </head>
          <body>
-           <h2>Extract a page</h2>
-           <form action="extract" method="get">
-             Page title<br/>
-             <input type="text" name="title" value={ getTitle }/><br/>
-             Revision ID (optional, overrides title)<br/>
-             <input type="text" name="revid"/><br/>
-             Output format<br/>
-             <select name="format">
-               <option value="trix">Trix</option>
-               <option value="turtle-triples">Turtle-Triples</option>
-               <option value="turtle-quads">Turtle-Quads</option>
-               <option value="n-triples">N-Triples</option>
-               <option value="n-quads">N-Quads</option>
-             </select><br/>
-             <input type="submit" value="Extract" />
-           </form>
+           <div class="container">
+             <div class="page-header">
+               <h2>Extract a page <small>Run the mapping extractor on Wikipedia articles</small></h2>
+             </div>
+             <form action="extract" method="get" role="form">
+               <div class="form-group">
+                 <label for="title">Page title</label>
+                 <input id="title" type="text" class="form-control" name="title" value={ getTitle }/>
+               </div>
+               <div class="form-group">
+                 <label for="revid">Revision ID (optional, overrides title)</label>
+                 <input id="revid" type="text" class="form-control" name="revid"/>
+               </div>
+               <div class="form-group">
+                 <label for="format">Output format</label>
+                 <select name="format" class="form-control">
+                   <option value="trix">Trix</option>
+                   <option value="turtle-triples">Turtle-Triples</option>
+                   <option value="turtle-quads">Turtle-Quads</option>
+                   <option value="n-triples">N-Triples</option>
+                   <option value="n-quads">N-Quads</option>
+                 </select>
+               </div>
+               <button type="submit" class="btn btn-primary">Extract</button>
+             </form>
+           </div>
          </body>
        </html>
     }
